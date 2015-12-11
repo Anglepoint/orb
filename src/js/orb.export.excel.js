@@ -118,25 +118,51 @@ var docFooter = '</body></html>';
  		return str;
  	}());
 
- 	var rowHeadersAndDataCells = (function() {
- 		var str = '';
- 		var j;
- 		for(var i = 0; i < pgridwidget.rows.headers.length; i++) {
- 			var currRow = pgridwidget.rows.headers[i];
- 			var rowStr = '<tr>';
- 			rowStr += currRow.reduce(function(tr, header) {
- 				return (tr += '<td ' + headerStyle + ' colspan="' + header.hspan(true) + '" rowspan="' + header.vspan(true) + '">' + header.value + '</td>');
- 			}, '');
- 			var dataRow = pgridwidget.dataRows[i];
- 			rowStr += dataRow.reduce(function(tr, dataCell, index) {
- 				var formatFunc = config.dataFields[index = index % config.dataFields.length].formatFunc;
- 				var value = dataCell.value == null ? '' : formatFunc ? formatFunc()(dataCell.value) : dataCell.value;
- 				return (tr += '<td>' + value + '</td>');
- 			}, '');
- 			str += rowStr + '</tr>';
- 		}
- 		return str;
- 	}());
+ 	var rowHeadersAndDataCells = (function () {
+        var str = '';
+        var j;
+        var rowHeaders = [];
+        var columnSpan = 1;
+
+        var initiateHeaderArray = function () {
+            rowHeaders = [];
+            for (var j = 0; j < currRow.length; j++) {
+                rowHeaders.push(currRow[j].value);
+            }
+            return rowHeaders;
+        };
+
+        for (var i = 0; i < pgridwidget.rows.headers.length; i++) {
+            var currRow = pgridwidget.rows.headers[i];
+            var arrayDiff = rowHeaders.length - currRow.length;
+            var rowStr = '<tr>';
+
+            for (var j = 0; j < currRow.length; j++) {
+                if (rowHeaders.length <= currRow.length) {
+                    rowHeaders = initiateHeaderArray();
+                } else if (rowHeaders.indexOf(currRow[currRow.length - 1].value) >= 0) {
+                    var loopIterations = rowHeaders.length - rowHeaders.indexOf(currRow[j].value) - 1;
+                    for (var k = 0; k <= loopIterations; k++) {
+                        rowHeaders[rowHeaders.length - k - 1] = currRow[j].value + " - Total";
+                    }
+                } else {
+                    rowHeaders.splice(j + arrayDiff, 1, currRow[j].value);
+                }
+            };
+
+            for (var j = 0; j < rowHeaders.length; j++) {
+                rowStr += '<td ' + headerStyle + ' colspan="' + columnSpan + '" rowspan="' + 1 + '">' + rowHeaders[j] + '</td>';
+            };
+            var dataRow = pgridwidget.dataRows[i];
+            rowStr += dataRow.reduce(function (tr, dataCell, index) {
+                var formatFunc = config.dataFields[index = index % config.dataFields.length].formatFunc;
+                var value = dataCell.value == null ? '' : formatFunc ? formatFunc()(dataCell.value) : dataCell.value;
+                return (tr += '<td>' + value + '</td>');
+            }, '');
+            str += rowStr + '</tr>';
+        }
+        return str;
+    }());
 
  	function toBase64(str) {
  		return utils.btoa(unescape(encodeURIComponent(str)));

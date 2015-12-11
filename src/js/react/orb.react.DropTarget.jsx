@@ -38,21 +38,21 @@ module.exports.DropTarget = react.createClass({
 			callback();
 		}
 	},
-	render: function() {	
+	render: function() {
 		var self = this;
 		var DropIndicator = module.exports.DropIndicator;
 
-		var buttons = this.props.buttons.map(function(button, index) {			
+		var buttons = this.props.buttons.map(function(button, index) {
 			if(index < self.props.buttons.length - 1) {
 				return [
-					<td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></td>,
-					<td>{ button }</td>
+					<div><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></div>,
+					<div>{ button }</div>
 				];
 			} else {
 				return [
-					<td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></td>,
-					<td>{ button }</td>,
-					<td><DropIndicator isLast={true} position={null} axetype={self.props.axetype}></DropIndicator></td>
+					<div><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></div>,
+					<div>{ button }</div>,
+					<div><DropIndicator isLast={true} position={null} axetype={self.props.axetype}></DropIndicator></div>
 				];
 			}
 		});
@@ -60,13 +60,13 @@ module.exports.DropTarget = react.createClass({
 		var style = self.props.axetype === axe.Type.ROWS ? { position: 'absolute', left: 0, bottom: 11 } : null;
 
 		return <div className={'drp-trgt' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-empty' : '')} style={style}>
-			<table>
+	{/* <table>
 			<tbody>
-				<tr>
+				<tr> */}
 					{buttons}
-				</tr>
+		{/* </tr>
 			</tbody>
-			</table>
+			</table> */}
 		</div>;
 	}
 });

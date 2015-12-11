@@ -1,10 +1,10 @@
 /**
- * orb v1.0.9, Pivot grid javascript library.
+ * orb v1.0.9, Pivot table javascript library.
  *
  * Copyright (c) 2014-2015 Najmeddine Nouri <devnajm@gmail.com>.
  *
  * @version v1.0.9
- * @link http://nnajm.github.io/orb/
+ * @link http://orbjs.net/
  * @license MIT
  */
 
@@ -47,6 +47,18 @@
     })({
         1: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
+
+
+
+
+
+
             module.exports.utils = _dereq_('./orb.utils');
             module.exports.pgrid = _dereq_('./orb.pgrid');
             module.exports.pgridwidget = _dereq_('./orb.ui.pgridwidget');
@@ -61,6 +73,12 @@
             "./orb.utils": 17
         }],
         2: [function(_dereq_, module, exports) {
+
+
+
+
+
+
 
             var Aggregations = module.exports = {
                 toAggregateFunc: function(func) {
@@ -174,6 +192,12 @@
         }, {}],
         3: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
             var utils = _dereq_('./orb.utils');
             var Dimension = _dereq_('./orb.dimension');
 
@@ -182,6 +206,7 @@
                 ROWS: 2,
                 DATA: 3
             };
+
 
             module.exports = function(pgrid, type) {
 
@@ -305,6 +330,7 @@
                 }
             };
 
+
             module.exports.Type = AxeType;
 
         }, {
@@ -312,6 +338,12 @@
             "./orb.utils": 17
         }],
         4: [function(_dereq_, module, exports) {
+
+
+
+
+
+
 
             var utils = _dereq_('./orb.utils');
             var axe = _dereq_('./orb.axe');
@@ -344,8 +376,8 @@
                     merged.subtotals.push(nnconfig.subTotal || {});
                     merged.functions.push({
                         aggregateFuncName: nnconfig.aggregateFuncName,
-                        aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
-                        formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
+                        aggregateFunc: (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
+                        formatFunc: (nnconfig.formatFunc ? nnconfig.formatFunc() : null)
                     });
                 }
 
@@ -487,6 +519,7 @@
                     (this.dataSettings = new Field(options.dataSettings, false)).name = this.name;
                 }
             };
+
 
             module.exports.config = function(config) {
 
@@ -645,6 +678,7 @@
                     return prefilters;
                 };
 
+
                 this.moveField = function(fieldname, oldaxetype, newaxetype, position) {
 
                     var oldaxe, oldposition;
@@ -762,6 +796,7 @@
                     }
                 };
 
+
                 this.toggleGrandtotal = function(axetype) {
                     var newState = !self.isGrandtotalVisible(axetype);
 
@@ -793,6 +828,13 @@
             "./orb.utils": 17
         }],
         5: [function(_dereq_, module, exports) {
+
+
+
+
+
+
+
 
             module.exports = function(id, parent, value, field, depth, isRoot, isLeaf) {
 
@@ -844,6 +886,7 @@
 
 
 
+
             var utils = _dereq_('./orb.utils');
             var uiheaders = _dereq_('./orb.ui.header');
             var themeManager = _dereq_('./orb.themes');
@@ -871,6 +914,7 @@
                 '</head>' +
                 '<body>';
             var docFooter = '</body></html>';
+
 
             module.exports = function(pgridwidget) {
 
@@ -951,12 +995,35 @@
                 var rowHeadersAndDataCells = (function() {
                     var str = '';
                     var j;
+                    var rowHeaders = [];
+                    var columnSpan = 1;
+                    var initiateHeaderArray = function() {
+                        rowHeaders = [];
+                        for (var j = 0; j < currRow.length; j++) {
+                            rowHeaders.push(currRow[j].value);
+                        }
+                        return rowHeaders;
+                    };
                     for (var i = 0; i < pgridwidget.rows.headers.length; i++) {
                         var currRow = pgridwidget.rows.headers[i];
+                        var arrayDiff = rowHeaders.length - currRow.length;
                         var rowStr = '<tr>';
-                        rowStr += currRow.reduce(function(tr, header) {
-                            return (tr += '<td ' + headerStyle + ' colspan="' + header.hspan(true) + '" rowspan="' + header.vspan(true) + '">' + header.value + '</td>');
-                        }, '');
+
+                        for (var j = 0; j < currRow.length; j++) {
+                            if (rowHeaders.length <= currRow.length) {
+                                rowHeaders = initiateHeaderArray();
+                            } else if (rowHeaders.indexOf(currRow[currRow.length - 1].value) >= 0) {
+                                for (var k = 0; k < (rowHeaders.length - rowHeaders.indexOf(currRow[j].value) - 1); k++) {
+                                    rowHeaders[rowHeaders.length - k - 1] = currRow[0].value + " - Total";
+                                }
+                            } else {
+                                rowHeaders.splice(j + arrayDiff, 1, currRow[j].value);
+                            }
+                        };
+
+                        for (var j = 0; j < rowHeaders.length; j++) {
+                            rowStr += '<td ' + headerStyle + ' colspan="' + columnSpan + '" rowspan="' + 1 + '">' + rowHeaders[j] + '</td>';
+                        };
                         var dataRow = pgridwidget.dataRows[i];
                         rowStr += dataRow.reduce(function(tr, dataCell, index) {
                             var formatFunc = config.dataFields[index = index % config.dataFields.length].formatFunc;
@@ -983,6 +1050,12 @@
             "./orb.utils": 17
         }],
         7: [function(_dereq_, module, exports) {
+
+
+
+
+
+
 
             var utils = _dereq_('./orb.utils');
 
@@ -1125,11 +1198,18 @@
         }],
         8: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
             var axe = _dereq_('./orb.axe');
             var configuration = _dereq_('./orb.config').config;
             var filtering = _dereq_('./orb.filtering');
             var query = _dereq_('./orb.query');
             var utils = _dereq_('./orb.utils');
+
 
             module.exports = function(config) {
 
@@ -1459,6 +1539,12 @@
             "./orb.utils": 17
         }],
         9: [function(_dereq_, module, exports) {
+
+
+
+
+
+
 
             var utils = _dereq_('./orb.utils');
             var axe = _dereq_('./orb.axe');
@@ -1820,6 +1906,9 @@
 
 
 
+
+
+
             module.exports = function() {
                 var states = {};
 
@@ -1833,6 +1922,10 @@
             };
         }, {}],
         11: [function(_dereq_, module, exports) {
+
+
+
+
 
             module.exports = (function() {
 
@@ -1957,8 +2050,15 @@
         }, {}],
         12: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
             var axe = _dereq_('./orb.axe');
             var uiheaders = _dereq_('./orb.ui.header');
+
 
             module.exports = function(axeModel) {
 
@@ -2021,9 +2121,16 @@
         }],
         13: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
             var axe = _dereq_('./orb.axe');
             var axeUi = _dereq_('./orb.ui.axe');
             var uiheaders = _dereq_('./orb.ui.header');
+
 
             module.exports = function(columnsAxe) {
 
@@ -2178,6 +2285,13 @@
         }],
         14: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
+
             var axe = _dereq_('./orb.axe');
             var state = new(_dereq_('./orb.state'))();
 
@@ -2273,6 +2387,7 @@
                     state.set(this.key, newState);
                 };
             }
+
 
             module.exports.header = function(axetype, headerType, dim, parent, datafieldscount, subtotalHeader) {
 
@@ -2427,6 +2542,7 @@
                         colinfo.value) :
                     pgrid.config.dataFields[0];
 
+
                 CellBase.call(this, {
                     axetype: null,
                     type: HeaderType.DATA_VALUE,
@@ -2470,6 +2586,12 @@
             "./orb.state": 10
         }],
         15: [function(_dereq_, module, exports) {
+
+
+
+
+
+
 
             var axe = _dereq_('./orb.axe');
             var pgrid = _dereq_('./orb.pgrid');
@@ -2707,9 +2829,16 @@
         }],
         16: [function(_dereq_, module, exports) {
 
+
+
+
+
+
+
             var axe = _dereq_('./orb.axe');
             var axeUi = _dereq_('./orb.ui.axe');
             var uiheaders = _dereq_('./orb.ui.header');
+
 
             module.exports = function(rowsAxe) {
 
@@ -2817,6 +2946,7 @@
         17: [function(_dereq_, module, exports) {
             (function(global) {
 
+
                 module.exports = {
 
                     ns: function(identifier, parent) {
@@ -2884,6 +3014,7 @@
                         return JSON.stringify(obj, censor, 2);
                     }
                 };
+
 
                 // from: https://github.com/davidchambers/Base64.js
 
@@ -3128,7 +3259,6 @@
                     nodes.rowHeadersTable.size = reactUtils.getSize(nodes.rowHeadersTable.node);
 
                     // get row buttons container width
-                    //nodes.rowButtonsContainer.node.style.width = '';
                     var rowButtonsContainerWidth = reactUtils.getSize(nodes.rowButtonsContainer.node.children[0]).width;
 
                     // get array of dataCellsTable column widths
@@ -3154,9 +3284,6 @@
                         nodes.rowHeadersTable.size.width += rowDiff;
                         nodes.rowHeadersTable.widthArray[nodes.rowHeadersTable.widthArray.length - 1] += rowDiff;
                     }
-
-                    //nodes.rowButtonsContainer.node.style.width = (rowHeadersTableWidth + 1) + 'px';
-                    //nodes.rowButtonsContainer.node.style.paddingRight = (rowHeadersTableWidth + 1 - rowButtonsContainerWidth + 17) + 'px';
 
                     // Set dataCellsTable cells widths according to the computed dataCellsTableMaxWidthArray
                     reactUtils.updateTableColGroup(nodes.dataCellsTable.node, dataCellsTableMaxWidthArray);
@@ -3537,7 +3664,6 @@
                 }
             }
 
-
             module.exports.PivotRow = react.createClass({
                 render: function() {
                     var self = this;
@@ -3794,8 +3920,6 @@
 
                 return classname;
             }
-
-
 
             var dragManager = module.exports.DragManager = (function() {
 
@@ -4086,22 +4210,22 @@
                     var buttons = this.props.buttons.map(function(button, index) {
                         if (index < self.props.buttons.length - 1) {
                             return [
-                                React.createElement("td", null, React.createElement(DropIndicator, {
+                                React.createElement("div", null, React.createElement(DropIndicator, {
                                     isFirst: index === 0,
                                     position: index,
                                     axetype: self.props.axetype
                                 })),
-                                React.createElement("td", null, button)
+                                React.createElement("div", null, button)
                             ];
                         } else {
                             return [
-                                React.createElement("td", null, React.createElement(DropIndicator, {
+                                React.createElement("div", null, React.createElement(DropIndicator, {
                                     isFirst: index === 0,
                                     position: index,
                                     axetype: self.props.axetype
                                 })),
-                                React.createElement("td", null, button),
-                                React.createElement("td", null, React.createElement(DropIndicator, {
+                                React.createElement("div", null, button),
+                                React.createElement("div", null, React.createElement(DropIndicator, {
                                     isLast: true,
                                     position: null,
                                     axetype: self.props.axetype
@@ -4120,13 +4244,9 @@
                             className: 'drp-trgt' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-empty' : ''),
                             style: style
                         },
-                        React.createElement("table", null,
-                            React.createElement("tbody", null,
-                                React.createElement("tr", null,
-                                    buttons
-                                )
-                            )
-                        )
+
+                        buttons
+
                     );
                 }
             });
@@ -4311,7 +4431,8 @@
                             React.createElement("tbody", null,
                                 React.createElement("tr", null,
                                     React.createElement("td", {
-                                        className: "caption"
+                                        className: "caption",
+                                        title: self.props.field.tooltip
                                     }, self.props.field.caption, fieldAggFunc),
                                     React.createElement("td", null, React.createElement("div", {
                                         className: 'sort-indicator ' + sortDirectionClass
@@ -5810,6 +5931,10 @@
             "react": undefined
         }],
         19: [function(_dereq_, module, exports) {
+
+
+
+
 
             module.exports.forEach = function(list, func, defStop) {
                 var ret;

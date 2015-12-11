@@ -11,7 +11,7 @@ module.exports.PivotTableUpperButtons = react.createClass({
     var DropTarget = comps.DropTarget;
 
     var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
-    
+
     var fieldsDropTarget;
     if(config.canMoveFields) {
       var fieldsButtons = config.availablefields().map(function(field, index) {

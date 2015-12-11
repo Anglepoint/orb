@@ -176,7 +176,7 @@ module.exports.PivotButton = react.createClass({
 		            <table>
 		            	<tbody>
 		            		<tr>
-		            			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
+		            			<td className="caption" title={self.props.field.tooltip}>{self.props.field.caption}{fieldAggFunc}</td>
 		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
 		            			<td className="filter">
 		            				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>

@@ -186,7 +186,6 @@ module.exports.PivotTable = react.createClass({
         nodes.rowHeadersTable.size = reactUtils.getSize(nodes.rowHeadersTable.node);
 
         // get row buttons container width
-        //nodes.rowButtonsContainer.node.style.width = '';
         var rowButtonsContainerWidth = reactUtils.getSize(nodes.rowButtonsContainer.node.children[0]).width;
 
         // get array of dataCellsTable column widths
@@ -212,9 +211,6 @@ module.exports.PivotTable = react.createClass({
             nodes.rowHeadersTable.size.width += rowDiff;
             nodes.rowHeadersTable.widthArray[nodes.rowHeadersTable.widthArray.length - 1] += rowDiff;
         }
-
-        //nodes.rowButtonsContainer.node.style.width = (rowHeadersTableWidth + 1) + 'px';
-        //nodes.rowButtonsContainer.node.style.paddingRight = (rowHeadersTableWidth + 1 - rowButtonsContainerWidth + 17) + 'px';
 
         // Set dataCellsTable cells widths according to the computed dataCellsTableMaxWidthArray
         reactUtils.updateTableColGroup(nodes.dataCellsTable.node, dataCellsTableMaxWidthArray);
@@ -598,17 +594,17 @@ function setTableWidths(tblObject, newWidthArray) {
 }
 
 function clearTableWidths(tbl) {
-        if (tbl) {
-            for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
-                var row = tbl.rows[rowIndex];
-                for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
-                    row.cells[cellIndex].children[0].style.width = '';
-                }
+    if (tbl) {
+        for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
+            var row = tbl.rows[rowIndex];
+            for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
+                row.cells[cellIndex].children[0].style.width = '';
             }
-            tbl.style.width = '';
         }
+        tbl.style.width = '';
     }
-    /** @jsx React.DOM */
+}
+/** @jsx React.DOM */
 
 /* global module, require, React */
 
@@ -847,38 +843,39 @@ module.exports.PivotCell = react.createClass({
 });
 
 function getClassname(compProps) {
-        var cell = compProps.cell;
-        var classname = cell.cssclass;
-        var isEmpty = cell.template === 'cell-template-empty';
+    var cell = compProps.cell;
+    var classname = cell.cssclass;
+    var isEmpty = cell.template === 'cell-template-empty';
 
-        if (!cell.visible()) {
-            classname += ' cell-hidden';
-        }
-
-        if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
-            classname += ' header-st-exp';
-        }
-
-        if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
-            if (cell.dim.depth === 1) {
-                classname += ' header-nofields';
-            } else if (cell.dim.depth > 2) {
-                classname += ' header-gt-exp';
-            }
-        }
-
-        if (compProps.leftmost) {
-            classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
-        }
-
-        if (compProps.topmost) {
-            classname += ' cell-topmost';
-        }
-
-        return classname;
+    if (!cell.visible()) {
+        classname += ' cell-hidden';
     }
-    /* global module, require, react, reactUtils */
-    /*jshint eqnull: true*/
+
+    if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
+        classname += ' header-st-exp';
+    }
+
+    if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
+        if (cell.dim.depth === 1) {
+            classname += ' header-nofields';
+        } else if (cell.dim.depth > 2) {
+            classname += ' header-gt-exp';
+        }
+    }
+
+    if (compProps.leftmost) {
+        classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
+    }
+
+    if (compProps.topmost) {
+        classname += ' cell-topmost';
+    }
+
+    return classname;
+}
+
+/* global module, require, react, reactUtils */
+/*jshint eqnull: true*/
 
 'use strict';
 
@@ -1184,22 +1181,22 @@ module.exports.DropTarget = react.createClass({
         var buttons = this.props.buttons.map(function(button, index) {
             if (index < self.props.buttons.length - 1) {
                 return [
-                    React.createElement("td", null, React.createElement(DropIndicator, {
+                    React.createElement("div", null, React.createElement(DropIndicator, {
                         isFirst: index === 0,
                         position: index,
                         axetype: self.props.axetype
                     })),
-                    React.createElement("td", null, button)
+                    React.createElement("div", null, button)
                 ];
             } else {
                 return [
-                    React.createElement("td", null, React.createElement(DropIndicator, {
+                    React.createElement("div", null, React.createElement(DropIndicator, {
                         isFirst: index === 0,
                         position: index,
                         axetype: self.props.axetype
                     })),
-                    React.createElement("td", null, button),
-                    React.createElement("td", null, React.createElement(DropIndicator, {
+                    React.createElement("div", null, button),
+                    React.createElement("div", null, React.createElement(DropIndicator, {
                         isLast: true,
                         position: null,
                         axetype: self.props.axetype
@@ -1218,16 +1215,17 @@ module.exports.DropTarget = react.createClass({
                 className: 'drp-trgt' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-empty' : ''),
                 style: style
             },
-            React.createElement("table", null,
-                React.createElement("tbody", null,
-                    React.createElement("tr", null,
-                        buttons
-                    )
-                )
-            )
+            /* <table>
+            		<tbody>
+            			<tr> */
+            buttons
+            /* </tr>
+            	</tbody>
+            	</table> */
         );
     }
 });
+
 /** @jsx React.DOM */
 
 /* global module, require, react */
@@ -1415,7 +1413,8 @@ module.exports.PivotButton = react.createClass({
                 React.createElement("tbody", null,
                     React.createElement("tr", null,
                         React.createElement("td", {
-                            className: "caption"
+                            className: "caption",
+                            title: self.props.field.tooltip
                         }, self.props.field.caption, fieldAggFunc),
                         React.createElement("td", null, React.createElement("div", {
                             className: 'sort-indicator ' + sortDirectionClass
@@ -1515,6 +1514,7 @@ module.exports.PivotTableUpperButtons = react.createClass({
         );
     }
 });
+
 /** @jsx React.DOM */
 
 /* global module, require, React */
